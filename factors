@@ -8,6 +8,7 @@ import logging
 
 logging.basicConfig(level=logging.ERROR)
 
+BATCH_SIZE = 100
 
 def factorize_number(number):
     """Factorizes numbers into a product of two numbers"""
@@ -45,12 +46,17 @@ if __name__ == "__main__":
     input_file_path = sys.argv[1]
     numbers_to_factorize = read_input_file(input_file_path)
 
-    start_time = time.time()
-    for number in numbers_to_factorize:
-        factors = factorize_number(number)
-        if factors:
-            print(f"{number}={factors[0]}*{factors[1]}")
+    signal.signal(signal.SIGALRM, timeout_error_handler)
+    signal.alarm(5)
 
+    start_time = time.time()
+    for y in range(0, len(numbers_to_factorize), BATCH_SIZE):
+        batch = numbers_to_factorize[y:y + BATCH_SIZE]
+        for number in batch:
+            factors = factorize_number(number)
+            if factors:
+                print(f"{number}={factors[0]}*{factors[1]}"
+    
     elapsed_time = time.time() - start_time
     signal.alarm(0)
     sys.exit(0)
