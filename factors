@@ -45,9 +45,6 @@ if __name__ == "__main__":
     input_file_path = sys.argv[1]
     numbers_to_factorize = read_input_file(input_file_path)
 
-    signal.signal(signal.SIGALRM, timeout_error_handler)
-    signal.alarm(5)
-
     start_time = time.time()
     for number in numbers_to_factorize:
         factors = factorize_number(number)
