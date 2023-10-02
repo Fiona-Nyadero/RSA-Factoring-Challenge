@@ -49,8 +49,9 @@ if __name__ == "__main__":
     signal.alarm(5)
 
     start_time = time.time()
-    for number in numbers_to_factorize:
-        factors = factorize_number(number)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = list(executor.map(factorize_number, numbers_to_factorize))
+    for number, factors in zip(numbers_to_factorize, results):
         if factors:
             print(f"{number}={factors[0]}*{factors[1]}")
 
