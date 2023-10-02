@@ -45,14 +45,15 @@ if __name__ == "__main__":
     input_file_path = sys.argv[1]
     numbers_to_factorize = read_input_file(input_file_path)
 
+    signal.signal(signal.SIGALRM, timeout_error_handler)
+    signal.alarm(5)
+
     start_time = time.time()
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = list(executor.map(factorize_number, numbers_to_factorize))
-    elapsed_time = time.time() - start_time
-
-    for number, factors in zip(numbers_to_factorize, results):
+    for number in numbers_to_factorize:
+        factors = factorize_number(number)
         if factors:
             print(f"{number}={factors[0]}*{factors[1]}")
 
+    elapsed_time = time.time() - start_time
+    signal.alarm(0)
     sys.exit(0)
